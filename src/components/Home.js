@@ -7,19 +7,25 @@ class Home extends Component {
   constructor(props) {
     super(props);
 
-    //this.handleOnName = this.handleOnName.bind(this);
     this.renderFriend = this.renderFriend.bind(this);
 
     this.state = {
         gId: props.match.params.id,
         friends: [],
+        name: "",
     };
   }
 
   componentDidMount() {
     var friends = [];
 
-    firebase.database().ref().child(this.state.gId).on('value', function(snapshot) {
+    firebase.database().ref().child(this.state.gId + "/name").on('value', function(snapshot) {
+      this.setState({
+        name: snapshot.val()
+      });
+    }.bind(this));
+
+    firebase.database().ref().child(this.state.gId + '/friends').on('value', function(snapshot) {
       snapshot.forEach(function(friend) {
         friends.push({
           fId: friend.key,
@@ -30,12 +36,19 @@ class Home extends Component {
       });
 
       this.setState({friends});
+      friends = [];
     }.bind(this));
   }
 
   renderFriend(friend, index) {
     return(
-        <h4 key={index} className="Friend">{friend.name}</h4>
+      <div className="card">
+          <div className="card-body" key={index}>
+            <b>{friend.name}</b>
+            <br/>
+            Leaving from: {friend.location}
+          </div>
+      </div>
     );
   }
 
@@ -43,23 +56,17 @@ class Home extends Component {
     return (
       <div className="Home">
         <div className="Home-header">
-          <h2>Lets get this Friend-cation going!</h2>
-          {
-            (this.state.friends.length !== 0) ? (
-              <div className="Home-">
-                <h3>Here is who is going!</h3>
-                {this.state.friends.map(this.renderFriend)}
-                <button className="btn">Join the Friend-cation</button>
-              </div>
-            ) : (
-              <button className="btn">Get Started</button>
-            )
-          }
+          <h2>Friend<img height="30px" width="30px" src="https://i.pinimg.com/originals/62/2e/0a/622e0a5f3dbc382572dfba679cd187ad.png" />cation!</h2>
+          <h3 className="Home-subtitle">{this.state.name}</h3>
         </div>
-        <p className="Home-intro">
-          To get started, pick your preference bellow. {this.state.gId}
-        </p>
-        <Question/>
+        <div className="Home-body">
+          <h3 className="">Friend(s)</h3>
+          <p>Here are your friends who have signed up for the trip</p>
+            {this.state.friends.map(this.renderFriend)}
+            <div className="Home-body-action">
+              <button className="btn btn-main">Find Our Destination</button>
+            </div>
+        </div>
       </div>
     );
   }
