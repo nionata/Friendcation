@@ -3,16 +3,43 @@
 }
 
 .Home-header {
-  background-color: #222;
-  height: 150px;
+  background-color: #00BCD4;
+  height: 15vh;
   padding: 20px;
   color: white;
+  box-shadow: 1px 1px 5px gray;
+}
+
+.Home-subtitle {
+  color: #757575;
+}
+
+.Home-body {
+  padding: 20px;
+  text-align: left;
 }
 
 .Home-intro {
   font-size: large;
 }
 
+.card {
+  margin-bottom: 10px;
+}
+
+.Home-body-action {
+  text-align: left;
+}
+
+.btn-main {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-main:hover {
+  background-color: #0097A7;
+}
+
 .Friend {
-  
+
 }

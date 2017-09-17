@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from './Home';
+import New from './New';
 import Lost from './Lost';
 
 class App extends Component {
@@ -8,7 +9,9 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Switch>
+          <Route exact path='/new' component={New} />
           <Route exact path='/friends/:id' component={Home} />
+          <Route exact path='/friends/:id/new' component={Home} />
           <Route path='*' component={Lost} />
         </Switch>
       </BrowserRouter>
