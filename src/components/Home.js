@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import "../assets/styling/Home.css";
 import * as firebase from 'firebase';
 import Question from "./Question";
+import axios from 'axios';
 
 class Home extends Component {
   constructor(props) {
@@ -9,6 +10,8 @@ class Home extends Component {
 
     this.onPress = this.onPress.bind(this);
     this.renderFriend = this.renderFriend.bind(this);
+    this.onDestination = this.onDestination.bind(this);
+    this.textCode = this.textCode.bind(this);
 
     this.state = {
         gId: props.match.params.id,
@@ -33,6 +36,7 @@ class Home extends Component {
           name: friend.val().name,
           location: friend.val().location,
           destination: friend.val().destination,
+          budget: friend.val().budget,
         });
       });
 
@@ -70,8 +74,56 @@ class Home extends Component {
 
   onDestination(e) {
     e.preventDefault();
+    var responses = [];
+    var { friends } = this.state;
+
+    friends.forEach(function(friend, index) {
+      var { location, budget } = friend;
+      console.log(location,budget);
+      var url = "https://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?apikey=UYe3laOLWr1Aq8eN0iOxBXygxA84YNb5&origin=" + location + "&max_price=" + budget + "";
+      console.log(url);
+      axios.get(url).then(function(response) {
+        responses.push(response.data);
+
+        if(responses.length === friends.length) {
+          console.log(responses);
 
 
+        }
+      }.bind(this));
+    }.bind(this));
+
+
+    /*for(var i = 0; i < 1; i++) {
+      var { location, budget } = friends[i];
+      console.log(location,budget);
+      var url = "https://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?apikey=UYe3laOLWr1Aq8eN0iOxBXygxA84YNb5&origin=" + location + "&max_price=" + 200;
+      console.log(url);
+      axios.get(url)
+      .then(response => responses.append(response.data));
+      /*.then(function(response) {
+        responses.append(response.data);
+        console.log(response.data);
+      });
+    }*/
+  }
+
+  textCode(e) {
+    e.preventDefault();
+
+    axios({
+      method: 'POST',
+      url: 'https://api.twilio.com/2010-04-01',
+      data: {
+        'to': '+17279024583',
+        'from': '+17278773264',
+        'body': 'Join your friends for a Friendcation: https://20e07962.ngrok.io/friends/' + this.state.gId + '/join'
+      }
+    });
+
+    //<i className="fa fa-share-alt fa-2x" onClick={this.textCode} aria-hidden="true"></i>
+
+    console.log("hi");
   }
 
   render() {
@@ -86,14 +138,24 @@ class Home extends Component {
             (this.state.name !== null) ? (
               <span>
                 <div style={{textAlign: 'right'}}>
-                  <i className="fa fa-share-alt fa-2x" onClick={() => prompt("Enter a friend's phone number to invite them to join.")} aria-hidden="true"></i>
+                  {
+                    (this.props.location.pathname === "/friends/" + this.state.gId + "/join") ? (
+                      <i className="fa fa-home fa-2x" onClick={() => this.props.history.push('/friends/' + this.state.gId)} aria-hidden="true"></i>
+                    ) : (
+                      <i className="fa fa-plus fa-2x" onClick={() => this.props.history.push('/friends/' + this.state.gId + '/join')} aria-hidden="true"></i>
+                    )
+                  }
                 </div>
                 <h3 className="">Friend(s)</h3>
                 <p>Here are your friends who have signed up for the trip</p>
                 {this.state.friends.map(this.renderFriend)}
                 {
                   (this.props.location.pathname === "/friends/" + this.state.gId + "/join") ? (
+                    <span>
+                    <div style={{textAlign: "right"}}>
+                    </div>
                     <Question title="Join the Friend-cation!" buttonTitle="Join!" onPress={this.onPress}/>
+                    </span>
                   ) : (
                     <div className="Home-body-action">
                       <button className="btn btn-main" onClick={this.onDestination}>Find Our Destination</button>

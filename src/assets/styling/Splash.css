@@ -1,1 +1,16 @@
 
+body .Splash-bod {
+background:url("../images/beachie.jpg")no-repeat;
+background-size:cover;
+font-family:Arial;
+text-align: center;
+}
+
+.Splash {
+  width: 50vw;
+  background-color: white;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 25vh;
+  padding: 5%;
+}

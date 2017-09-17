@@ -51,4 +51,4 @@ class New extends Component {
   }
 }
 
-export default withRouter(New);
+export default New;
