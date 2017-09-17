@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import "../assets/styling/Home.css";
 import * as firebase from 'firebase';
+import Question from "./Question";
 
 class Home extends Component {
   constructor(props) {
@@ -58,6 +59,7 @@ class Home extends Component {
         <p className="Home-intro">
           To get started, pick your preference bellow. {this.state.gId}
         </p>
+        <Question/>
       </div>
     );
   }
