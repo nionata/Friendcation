@@ -68,6 +68,11 @@ class Home extends Component {
     }.bind(this));
   }
 
+  onDestination(e) {
+    e.preventDefault();
+
+
+  }
 
   render() {
     return (
@@ -77,26 +82,32 @@ class Home extends Component {
           <h3 className="Home-subtitle">{this.state.name}</h3>
         </div>
         <div className="Home-body">
-          <div className="row container-fluid">
-            <div className="col-6-md">
-              <h3 className="">Friend(s)</h3>
-              <p>Here are your friends who have signed up for the trip</p>
-            </div>
-            <div className="col-md-6 right-icon">
-              <i className="fa fa-share-alt fa-2x" onClick={() => prompt("Enter a friend's phone number to invite them to join.")} aria-hidden="true"></i>
-            </div>
-          </div>
-          {this.state.friends.map(this.renderFriend)}
           {
-            (this.props.location.pathname === "/friends/" + this.state.gId + "/join") ? (
-              <Question title="Join the Friend-cation!" buttonTitle="Join!" onPress={this.onPress}/>
+            (this.state.name !== null) ? (
+              <span>
+                <div style={{textAlign: 'right'}}>
+                  <i className="fa fa-share-alt fa-2x" onClick={() => prompt("Enter a friend's phone number to invite them to join.")} aria-hidden="true"></i>
+                </div>
+                <h3 className="">Friend(s)</h3>
+                <p>Here are your friends who have signed up for the trip</p>
+                {this.state.friends.map(this.renderFriend)}
+                {
+                  (this.props.location.pathname === "/friends/" + this.state.gId + "/join") ? (
+                    <Question title="Join the Friend-cation!" buttonTitle="Join!" onPress={this.onPress}/>
+                  ) : (
+                    <div className="Home-body-action">
+                      <button className="btn btn-main" onClick={this.onDestination}>Find Our Destination</button>
+                    </div>
+                  )
+                }
+              </span>
             ) : (
-              <div className="Home-body-action">
-                <button className="btn btn-main">Find Our Destination</button>
+              <div style={{textAlign: 'center'}}>
+                <h3>That Friend-cation does not exist!</h3>
               </div>
             )
           }
-        </div>
+      </div>
       </div>
     );
   }
