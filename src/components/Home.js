@@ -54,7 +54,18 @@ class Home extends Component {
   }
 
   onPress(name, budget, destination, location) {
-    console.log(name, budget, destination, location);
+    var updates = {};
+    var gId = this.state.gId;
+    var friend = firebase.database().ref().child(gId + '/friend/').push();
+
+    updates[gId + '/friends/' + friend.key + '/name'] = name;
+    updates[gId + '/friends/' + friend.key + '/budget'] = budget;
+    updates[gId + '/friends/' + friend.key + '/destination'] = destination;
+    updates[gId + '/friends/' + friend.key + '/location'] = location;
+
+    firebase.database().ref().update(updates).then(function() {
+      this.props.history.push('/friends/' + gId);
+    }.bind(this));
   }
 
 
@@ -66,8 +77,15 @@ class Home extends Component {
           <h3 className="Home-subtitle">{this.state.name}</h3>
         </div>
         <div className="Home-body">
-          <h3 className="">Friend(s)</h3>
-          <p>Here are your friends who have signed up for the trip</p>
+          <div className="row container-fluid">
+            <div className="col-6-md">
+              <h3 className="">Friend(s)</h3>
+              <p>Here are your friends who have signed up for the trip</p>
+            </div>
+            <div className="col-md-6 right-icon">
+              <i className="fa fa-share-alt fa-2x" onClick={() => prompt("Enter a friend's phone number to invite them to join.")} aria-hidden="true"></i>
+            </div>
+          </div>
           {this.state.friends.map(this.renderFriend)}
           {
             (this.props.location.pathname === "/friends/" + this.state.gId + "/join") ? (
