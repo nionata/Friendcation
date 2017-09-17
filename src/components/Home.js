@@ -11,12 +11,14 @@ class Home extends Component {
     this.onPress = this.onPress.bind(this);
     this.renderFriend = this.renderFriend.bind(this);
     this.onDestination = this.onDestination.bind(this);
-    this.textCode = this.textCode.bind(this);
+    this.renderDes = this.renderDes.bind(this);
+    //this.textCode = this.textCode.bind(this);
 
     this.state = {
         gId: props.match.params.id,
         friends: [],
         name: "",
+        des: [],
     };
   }
 
@@ -57,6 +59,16 @@ class Home extends Component {
     );
   }
 
+  renderDes(des, index) {
+    return(
+      <div className="card" key={index}>
+          <div className="card-body">
+            <b>{des}</b>
+          </div>
+      </div>
+    );
+  }
+
   onPress(name, budget, destination, location) {
     var updates = {};
     var gId = this.state.gId;
@@ -74,6 +86,16 @@ class Home extends Component {
 
   onDestination(e) {
     e.preventDefault();
+
+    if(this.state.des.length !== 0) {
+
+        this.setState({
+          des: []
+        });
+
+        return
+    }
+
     var responses = [];
     var { friends } = this.state;
 
@@ -83,12 +105,28 @@ class Home extends Component {
       var url = "https://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?apikey=UYe3laOLWr1Aq8eN0iOxBXygxA84YNb5&origin=" + location + "&max_price=" + budget + "";
       console.log(url);
       axios.get(url).then(function(response) {
-        responses.push(response.data);
+        var destinations = [];
+
+        response.data.results.forEach(flight => destinations.push(flight.destination));
+
+        responses.push(destinations);
 
         if(responses.length === friends.length) {
           console.log(responses);
 
+          var refResponsesOne = responses[0].filter(function(destination) {
+            return responses[1].includes(destination);
+          }.bind(this));
 
+          var finalDes = refResponsesOne.filter(function(destination) {
+            return responses[2].includes(destination);
+          });
+
+          this.setState({
+            des: finalDes,
+          });
+
+          console.log(finalDes);
         }
       }.bind(this));
     }.bind(this));
@@ -108,7 +146,7 @@ class Home extends Component {
     }*/
   }
 
-  textCode(e) {
+  /*textCode(e) {
     e.preventDefault();
 
     axios({
@@ -124,7 +162,7 @@ class Home extends Component {
     //<i className="fa fa-share-alt fa-2x" onClick={this.textCode} aria-hidden="true"></i>
 
     console.log("hi");
-  }
+  }*/
 
   render() {
     return (
@@ -157,11 +195,14 @@ class Home extends Component {
                     <Question title="Join the Friend-cation!" buttonTitle="Join!" onPress={this.onPress}/>
                     </span>
                   ) : (
+                    <span>
                     <div className="Home-body-action">
                       <button className="btn btn-main" onClick={this.onDestination}>Find Our Destination</button>
                     </div>
+                    </span>
                   )
                 }
+                {this.state.des.map(this.renderDes)}
               </span>
             ) : (
               <div style={{textAlign: 'center'}}>
