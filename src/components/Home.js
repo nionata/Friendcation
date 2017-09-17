@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import "../assets/styling/Home.css";
 import * as firebase from 'firebase';
+import Question from "./Question";
 
 class Home extends Component {
   constructor(props) {
